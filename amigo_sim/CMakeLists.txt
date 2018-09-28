@@ -1,0 +1,1 @@
+project(amigo_sim)

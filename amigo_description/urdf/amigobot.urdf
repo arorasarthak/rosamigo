@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+
+<!-- created by Michael Kopp, 2017-02-27, BSD licensed -->
+
+<robot name="amigobot"
+    xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+    xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+    xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+    xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+    <!-- chassis -->
+    <link name="base_link">
+        <visual>
+            <origin xyz="0.05 0 0.08" /> <!-- 3cm above floor, height 10cm; center at 8cm -->
+            <geometry>
+                <cylinder length="0.10" radius="0.1" />
+            </geometry>
+            <material name="robot_color"> <color rgba="1 0 0 1" /> </material>
+        </visual>
+        <visual>
+            <origin xyz="-0.06 0 0.08" />
+            <geometry>
+                <cylinder length="0.10" radius="0.1" />
+            </geometry>
+                <material name="green"> <color rgba="0 1 0 0.5" /> </material>
+        </visual>
+        <visual>
+            <origin xyz="-0.02 0 0.08" />
+            <geometry>
+                <box size="0.12 0.28 0.1" />
+            </geometry>
+            <material name="robot_color" />
+        </visual>
+        <visual>
+            <origin xyz="-0.08 0.1 0.08" /> <!-- x is box border -->
+            <geometry>
+                <cylinder length="0.10" radius="0.04" />
+            </geometry>
+            <material name="robot_color" />
+        </visual>
+        <visual>
+            <origin xyz="-0.08 -0.1 0.08" />
+            <geometry>
+                <cylinder length="0.10" radius="0.04" />
+            </geometry>
+            <material name="robot_color" />
+        </visual>
+    </link>
+
+
+    <!-- sonar; global frame in which sonar messages are published -->
+
+    <link name="sonar" />
+    <joint name="sonar_to_base_link" type="fixed">
+        <parent link="base_link" />
+        <child link="sonar" />
+        <origin xyz="0 0 0.11" />
+    </joint>
+
+    <!-- individual sonars -->
+    <xacro:macro name="single_sonar" params="num x y theta">
+        <link name="sonar_${num}">
+            <visual>
+                <!-- flat cylinder; flat side is in x direction, rotate in joint
+                 appropriately -->
+                <origin xyz="0 0 0" rpy="0 1.5707963267948966 0" />
+                <geometry>
+                    <cylinder length="0.01" radius="0.02" />
+                </geometry>
+                <material name="yellow">
+                    <color rgba="1 1 0 1" />
+                </material>
+            </visual>
+        </link>
+        <joint name="sonar_${num}_to_base_link" type="fixed">
+            <parent link="base_link" />
+            <child link="sonar_${num}" />
+            <origin xyz="${x} ${y} 0.11" rpy="0 0 ${theta}" />
+        </joint>
+    </xacro:macro>
+
+    <!-- sonar poses in x [mm], y [mm], theta [rad] of robot system
+          at 70, 100, 1.5708
+          at 125, 75, 0.715585
+          at 144, 30, 0.261799
+          at 144, -30, -0.261799
+          at 120, -75, -0.715585
+          at 70, -100, -1.5708
+          at -146, -58, -2.53073
+          at -146, 58, 2.53073
+          -->
+
+    <xacro:single_sonar num="0" x="0.07" y="0.1" theta="1.5707963267948966" />
+    <xacro:single_sonar num="1" x="0.125" y="0.075" theta="0.715585" />
+    <xacro:single_sonar num="2" x="0.144" y="0.03" theta="0.261799" />
+    <xacro:single_sonar num="3" x="0.144" y="-0.03" theta="-0.261799" />
+    <xacro:single_sonar num="4" x="0.125" y="-0.075" theta="-0.715585" />
+    <xacro:single_sonar num="5" x="0.07" y="-0.1" theta="-1.5707963267948966" />
+    <xacro:single_sonar num="6" x="-0.146" y="-0.058" theta="-2.53073" />
+    <xacro:single_sonar num="7" x="-0.146" y="0.058" theta="2.53073" />
+
+
+    <!-- stuff mounted on the robot should refer to this
+
+         The robot has a small black dot at the "center" of the top_plate frame.
+         -->
+
+    <link name="top_plate" />
+    <joint name="top_plate_to_base_link" type="fixed">
+        <parent link="base_link" />
+        <child link="top_plate" />
+        <origin xyz="0 0 0.13" />
+    </joint>
+
+
+    <!-- Camera; mounted on top front of robot
+
+         load the xacro with
+         <param name="robot_description" command="$(find xacro)/xacro $(arg model) web_cam_position:='false'" />
+         to not add a camera.
+
+         For a camera, the z axis is in the direction of the view, x goes to
+         the right (wrt/ view direction) and y downwards.
+
+         Parameters to place the web cam:
+
+         web_cam_position can be a triple x y z; relative position from the top
+            plate origin (small black plastic disc)
+
+            defaults to "0.063 0 0.054" which is the value for the lens of an
+            edimax_ic_3115w camera mounted directly on the robot (i.e. no
+            stand) s.th. the indentation that runs around the camera directly
+            touches the second screw holes from the front of the robot.
+
+            If this is 'false', no web cam is included in the urdf.
+
+         web_cam_rotation can be a triple roll pitch yaw for the camera
+            rotation.
+
+            The default is "pi/2 pi pi/2 " which is a camera that looks to the
+            front of the robot (i.e. z_camera is x_robot, y_camera is -z_robot).
+
+            Note: You can use this applett
+            http://www.ctralie.com/Teaching/COMPSCI290/Materials/EulerAnglesViz/
+            to easily determine rpy values.
+
+            Example values:
+            - "0 1.5707963267948966 0": camera looks to the front direction of
+                the robot and the camera "top" is on the right wrt/ view
+                (=robot) direction.
+            - "0 -1.5707963267948966 3.141592653589793": like above but camera
+                "top" is on the left wrt/ view direction.
+         -->
+    <!-- arguments to this xacro file -->
+    <xacro:arg name="web_cam_position" default="0.063 0 0.054" />
+    <xacro:arg name="web_cam_rotation" default="1.5707963267948966 3.141592653589793 1.5707963267948966" />
+    <!-- make them parameter in xacro -->
+    <xacro:property name="web_cam_position_prop" value="$(arg web_cam_position)"/>
+    <xacro:if value="${web_cam_position_prop != 'false'}">
+        <link name="web_cam">
+            <visual>
+                <geometry>
+                    <box size="0.07 0.1 0.025"/> <!-- size of an edimax_ic_3115w -->
+                </geometry>
+                <material name="white"> <color rgba="1 1 1 1" /> </material>
+            </visual>
+        </link>
+
+        <joint name="camera_to_top_plate" type="fixed">
+            <origin xyz="$(arg web_cam_position)" rpy="$(arg web_cam_rotation)"/>
+            <parent link="top_plate"/>
+            <child link="web_cam"/>
+        </joint>
+    </xacro:if>
+
+</robot>
+

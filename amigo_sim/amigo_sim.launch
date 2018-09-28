@@ -1,0 +1,21 @@
+<launch>
+  <remap from="/sim_p3at/cmd_vel" to="cmd_vel"/>
+  <remap from="/sim_p3at/odom" to="odom"/>
+
+  <env name="GAZEBO_MODEL_PATH" value="$GAZEBO_MODEL_PATH:$(find amigo_sim)/models" />
+  <env name="GAZEBO_RESOURCE_PATH" value="$GAZEBO_RESOURCE_PATH:$(find amigo_sim)/models" />
+
+  <arg name="world" default="$(find amigo_sim)/empty.world" />
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+	<!--<arg name="world" value="$(arg world)" />-->
+  </include>
+
+  <arg name="urdf" default="$(find amigo_description)/urdf/pioneer3at.urdf" />
+  <arg name="name" default="pioneer3at" />
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg urdf)" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model $(arg name)" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find amigo_sim)/gazebo_rviz.rviz" required="true" />
+
+</launch>
+

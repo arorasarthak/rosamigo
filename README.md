@@ -3,11 +3,11 @@
 ## Follow these instructions:
 * Step 1) Navigate to your home folder: ```cd ~```
 
-* Step 2) Name your workspace: ```export YOUR_WS="name goes here"```
+* Step 2) Name your workspace: ```export YOUR_WS="your_workspace_name"```
 
-* Step 2) Make your workspace folder: ```mkdir -p "your workspace name"/src```
+* Step 2) Make your workspace folder: ```mkdir -p "your_workspace_name"/src```
 
-* Step 3) Navigate to the src folder: ```cd "your workspace name"/src```
+* Step 3) Navigate to the src folder: ```cd "your_workspace_name"/src```
 
 * Step 4) Clone the contents of this repo using: ```git clone https://github.com/arorasarthak/rosamigo.git .```
 

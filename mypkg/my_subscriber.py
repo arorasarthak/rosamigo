@@ -13,16 +13,17 @@ def callback(data):
     """
     Callback does something everytime a message is recieved by a subscriber.
     You define the logic after this line.
+    :params:
     data: this is the data processed by the callback
     :return: returns nothing
     """
     print(data.linear)
     print(data.angular)
-    return None
 
 def subscribe(topic_name='/cmd_vel', callback_name=callback, node_name="mynode", message_object=Twist):
     """
     Subscriber subscribes to a topic and uses a callback to do something defined by you.
+    :params:
     topic_name: The name of the topic you subscribe to goes here. Must be a string! 
     callback_name: Name of your callback function. Must be a func signature!
     node_name: Define your node name here. Must be a string!
@@ -35,7 +36,7 @@ def subscribe(topic_name='/cmd_vel', callback_name=callback, node_name="mynode",
 
 def main():
     """
-    You must begin by modifying this function.
+    You can begin by modifying this function.
     """
     subscribe()
 

@@ -1,4 +1,4 @@
-# rosamigo
+# [EEEE 585/585] Experiment 3: AmigoBot with ROS
 
 ## Follow these instructions ~
 Step 1) Navigate to your home folder:$ cd ~

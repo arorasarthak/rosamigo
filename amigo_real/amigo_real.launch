@@ -1,5 +1,7 @@
 <launch>
   <remap from="/rosaria/cmd_vel" to="/cmd_vel" />
+  <remap from="/rosaria/sonar" to="/sonar" />
+  <remap from="/rosaria/pose" to="/pose" />
   <arg name="robot_ip" />
   <arg name="urdf" default="$(find amigo_description)/urdf/amigobot.urdf" />
   <param name="robot_description" textfile="$(arg urdf)" />

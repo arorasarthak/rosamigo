@@ -1,9 +1,9 @@
 # rosamigo
 
 ## Follow these instructions ~
-### Direct to your home folder: "cd ~"
-### Make your workspace folder: "mkdir -p amigo_ws/src"
-### Clone this repo using this: "git clone https://github.com/arorasarthak/rosamigo.git ."
-### Run the patch: "./patch.sh"
-### Navigate back to workspace: "cd .."
-### Build your workspace: "catkin_make"
+#### Step 1) Direct to your home folder: "cd ~"
+#### Step 2) Make your workspace folder: "mkdir -p amigo_ws/src"
+#### Step 3) Clone this repo using this: "git clone https://github.com/arorasarthak/rosamigo.git ."
+#### Step 4) Run the patch: "./patch.sh"
+#### Step 5) Navigate back to workspace: "cd .."
+#### Step 6) Build your workspace: "catkin_make"

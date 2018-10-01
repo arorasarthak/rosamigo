@@ -1,6 +1,6 @@
 # [EEEE 585/685] Experiment 3: AmigoBot with ROS
 
-## Follow these instructions ~
+## Follow these instructions:
 * Step 1) Navigate to your home folder: ```cd ~```
 
 * Step 2) Name your workspace: ```export YOUR_WS="name goes here"```
